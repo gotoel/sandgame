@@ -388,6 +388,7 @@ FodyWeavers.xsd
 *.sln.iml
 
 # S&box specific
+_bakeresourcecache/
 .codegen/
 obj/
 code/accesslist.txt
