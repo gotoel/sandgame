@@ -1,4 +1,5 @@
 ﻿using Sandbox.UI;
+using sandgame.UI;
 
 namespace sandgame
 {
@@ -10,10 +11,10 @@ namespace sandgame
 	{
 		public MyHudEntity()
 		{
-			if ( IsClient )
-			{
-				RootPanel.SetTemplate( "/MyHud.html" );
-			}
+			if ( !IsClient )
+				return;
+
+			RootPanel.SetTemplate( "UI/MyHud.html" );			
 		}
 	}
 }

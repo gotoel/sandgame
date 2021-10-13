@@ -2,9 +2,11 @@
 
 namespace sandgame
 {
-    class MyPlayer : Player
-    {
+	partial class SandgamePlayer : Player
+	{
 		TimeSince timeSinceDeath;
+		private DamageInfo lastDamage;
+
 
 		public TimeSince TimeSinceDeath
 		{
@@ -14,7 +16,7 @@ namespace sandgame
 		public override void Respawn()
 		{
 			DebugOverlay.ScreenText( "Respawning..." );
-			SetModel("models/citizen/citizen.vmdl");
+			SetModel( "models/citizen/citizen.vmdl" );
 
 			// Use WalkController for movement (you can make your own PlayerController for 100% control)
 			Controller = new WalkController();
@@ -30,8 +32,6 @@ namespace sandgame
 			EnableHideInFirstPerson = true;
 			EnableShadowInFirstPerson = true;
 
-			LifeState = LifeState.Alive;
-
 			base.Respawn();
 		}
 
@@ -40,18 +40,30 @@ namespace sandgame
 			base.OnKilled();
 
 			Log.Error( "You died!" );
-			LifeState = LifeState.Dead; 
 			timeSinceDeath = 0;
 
 			EnableDrawing = false;
 
-			var ragdoll = new ModelEntity();
-			ragdoll.SetModel( "models/citizen/citizen.vmdl" );
-			ragdoll.Position = Position;
-			ragdoll.Rotation = Rotation;
-			ragdoll.SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
-			ragdoll.Velocity = EyeRot.Forward * 500f;
-			ragdoll.PhysicsGroup.Velocity = EyeRot.Forward * 1000f;
+			BecomeRagdollOnClient( Velocity, lastDamage.Flags, lastDamage.Position, lastDamage.Force, GetHitboxBone( lastDamage.HitboxIndex ) );
+		}
+
+		public override void TakeDamage( DamageInfo info )
+		{
+			if ( GetHitboxGroup( info.HitboxIndex ) == 1 )
+			{
+				info.Damage *= 10.0f;
+			}
+
+			lastDamage = info;
+
+			TookDamage( lastDamage.Flags, lastDamage.Position, lastDamage.Force );
+
+			base.TakeDamage( info );
+		}
+
+		[ClientRpc]
+		public void TookDamage( DamageFlags damageFlags, Vector3 forcePos, Vector3 force )
+		{
 		}
 	}
 }

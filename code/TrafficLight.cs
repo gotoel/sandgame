@@ -12,7 +12,8 @@ namespace sandgame
 			YELLOW,
 			RED
 		}
-		
+
+		Sound announcerSound;
 		SpotLightEntity greenLight, yellowLight, redLight;
 		LightState state, previousState;
 		TimeSince timeSinceLightChange;
@@ -35,31 +36,23 @@ namespace sandgame
 			yellowLight.Brightness = 18;
 			redLight.Brightness = 20;
 
-			if( greenLight == null)
-			{
-				Log.Info( "Could not find green light." );
-			} else
-			{
-				Log.Info( "Found light." );
-			}
-
 			state = LightState.GREEN;
 
 			timeSinceLightChange = 0;
 
 			random = new Random();
+
+			announcerSound = Sound.FromEntity( "light_announce", greenLight );
 		}
 
 
 		public void Tick()
 		{
-			Log.Info( "TimeSinceLightChange: " + timeSinceLightChange );
-
 			if(state == LightState.GREEN)
 			{
-				if ( timeSinceLightChange > 1 )
+				if ( timeSinceLightChange > 3 )
 				{
-					if ( random.NextDouble() < .65 )
+					if ( random.NextDouble() < .50 )
 					{
 						SetState( LightState.YELLOW );
 						timeSinceLightChange = 0;
@@ -68,10 +61,11 @@ namespace sandgame
 				}
 			} else if(state == LightState.YELLOW)
 			{
-				if ( timeSinceLightChange > 0.6 )
+				if ( timeSinceLightChange > 1 )
 				{
-					if ( random.NextDouble() < .80 )
+					if ( random.NextDouble() < .70 )
 					{
+						announcerSound.Stop();
 						SetState( LightState.RED );
 						timeSinceLightChange = 0;
 						UpdateLight();
@@ -79,13 +73,15 @@ namespace sandgame
 				}
 			} else if ( state == LightState.RED )
 			{
-				if ( timeSinceLightChange > 1 )
+				if ( timeSinceLightChange > 2 )
 				{
 					if ( random.NextDouble() < .40 )
 					{
 						SetState( LightState.GREEN );
 						timeSinceLightChange = 0;
 						UpdateLight();
+						announcerSound = Sound.FromEntity( "light_announce", greenLight );
+						announcerSound.SetRandomPitch( 1, 2.5f );
 					}
 				}
 			}	
@@ -135,7 +131,6 @@ namespace sandgame
 		{
 			state = s;
 			UpdateLight();
-			Log.Info( "Set light state: " + s );
 		}
 
 		public void TurnOff()

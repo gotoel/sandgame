@@ -53,7 +53,7 @@ public partial class SandGame : Sandbox.Game
 		base.ClientJoined(client);
 
 		// Create a pawn and assign it to the client.
-		var player = new MyPlayer();
+		var player = new SandgamePlayer();
 		client.Pawn = player;
 
 		player.Respawn();
@@ -107,10 +107,10 @@ public partial class SandGame : Sandbox.Game
 
 		foreach ( var c in Client.All )
 		{
-			if ( c.Pawn.LifeState == LifeState.Dead && (c.Pawn as MyPlayer).TimeSinceDeath > 5 )
+			if ( c.Pawn.LifeState == LifeState.Dead && (c.Pawn as SandgamePlayer).TimeSinceDeath > 5 )
 			{
 				if(trafficLight.State == TrafficLight.LightState.GREEN)
-					(c.Pawn as MyPlayer).Respawn();
+					(c.Pawn as SandgamePlayer).Respawn();
 			}
 		}
 	}
@@ -125,12 +125,13 @@ public partial class SandGame : Sandbox.Game
 			{
 				foreach ( var c in Client.All )
 				{
-					if ( c.Pawn != null )
+					if ( c.Pawn != null && c.Pawn.LifeState == LifeState.Alive )
 					{
 						if ( c.Pawn.Velocity != Vector3.Zero )
 						{
 							Log.Info( "GOT ONE!!!" );
-							c.Pawn.TakeDamage( DamageInfo.Generic( 100 ) );
+							(c.Pawn as SandgamePlayer).Die();
+							c.Pawn.TakeDamage( DamageInfo.Generic( c.Pawn.Health ) );
 						}
 					}
 				}
