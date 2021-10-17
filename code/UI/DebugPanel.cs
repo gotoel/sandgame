@@ -6,10 +6,12 @@ namespace sandgame.UI
 {
 	public class DebugPanel : Panel
 	{
-		public Label VelocityLabel;
+		public Label VelocityLabel, RotLabel;
+
 		public DebugPanel()
 		{
 			VelocityLabel = Add.Label( "100", "value" );
+			RotLabel = Add.Label( "100", "value" );
 		}
 
 		public override void Tick()
@@ -18,6 +20,7 @@ namespace sandgame.UI
 			if ( player == null ) return;
 
 			VelocityLabel.Text = $"Velocity: ({player.Velocity.x},{player.Velocity.y},{player.Velocity.z})";
+			RotLabel.Text = $"Angle: ({player.Rotation.Yaw()})";
 		}
 	}
 }

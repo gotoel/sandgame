@@ -1,4 +1,5 @@
 ﻿using Sandbox;
+using System;
 
 namespace sandgame
 {
@@ -6,7 +7,14 @@ namespace sandgame
 	{
 		TimeSince timeSinceDeath;
 		private DamageInfo lastDamage;
+		private Random random;
 
+		public Clothing.Container Clothing = new();
+
+		public SandgamePlayer()
+		{
+			random = new Random();
+		}
 
 		public TimeSince TimeSinceDeath
 		{
@@ -17,6 +25,9 @@ namespace sandgame
 		{
 			DebugOverlay.ScreenText( "Respawning..." );
 			SetModel( "models/citizen/citizen.vmdl" );
+
+			Clothing.LoadFromClient( Client );
+			Clothing.DressEntity( this );
 
 			// Use WalkController for movement (you can make your own PlayerController for 100% control)
 			Controller = new WalkController();
@@ -44,7 +55,9 @@ namespace sandgame
 
 			EnableDrawing = false;
 
-			BecomeRagdollOnClient( Velocity, lastDamage.Flags, lastDamage.Position, lastDamage.Force, GetHitboxBone( lastDamage.HitboxIndex ) );
+			//BecomeRagdollOnClientFull( Velocity, lastDamage.Flags, lastDamage.Position, lastDamage.Force, GetHitboxBone( lastDamage.HitboxIndex ) );
+			//BecomeRagdollOnClientFull( Velocity, lastDamage.Flags, lastDamage.Position, new Vector3(random.Next(-100,100), random.Next( -100, 100 ), random.Next( -100, 100 )), GetHitboxBone( lastDamage.HitboxIndex ) );
+			BecomeRagdollOnClientBasic();
 		}
 
 		public override void TakeDamage( DamageInfo info )

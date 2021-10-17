@@ -40,11 +40,14 @@ public partial class SandGame : Sandbox.Game
 			trafficLight.SetState( TrafficLight.LightState.GREEN );
 			state = GameState.InRound;
 			_ = StartRoundTimer();
-		}
 
-		foreach ( var c in Client.All )
-		{
-			Client.SetInt( "wins", 0 );
+			if ( Client != null )
+			{
+				foreach ( var c in Client.All )
+				{
+					Client.SetInt( "wins", 0 );
+				}
+			}
 		}
 	}
 
@@ -80,6 +83,8 @@ public partial class SandGame : Sandbox.Game
 		if ( IsServer )
 		{
 			trafficLight = new TrafficLight();
+
+			SandgameBot.SpawnCustomBot();
 		}
 
 		_ = StartSecondTimer();

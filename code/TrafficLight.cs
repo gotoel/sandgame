@@ -26,6 +26,8 @@ namespace sandgame
 
 		public TrafficLight()
 		{
+			Name = "TrafficLight";
+
 			greenLight = FindByName( "green_light" ) as SpotLightEntity;
 			yellowLight = FindByName( "yellow_light" ) as SpotLightEntity;
 			redLight = FindByName( "red_light" ) as SpotLightEntity;
@@ -42,7 +44,7 @@ namespace sandgame
 
 			random = new Random();
 
-			announcerSound = Sound.FromEntity( "light_announce", greenLight );
+			//announcerSound = Sound.FromEntity( "light_announce", greenLight );
 		}
 
 
@@ -80,8 +82,8 @@ namespace sandgame
 						SetState( LightState.GREEN );
 						timeSinceLightChange = 0;
 						UpdateLight();
-						announcerSound = Sound.FromEntity( "light_announce", greenLight );
-						announcerSound.SetRandomPitch( 1, 2.5f );
+						//announcerSound = Sound.FromEntity( "light_announce", greenLight );
+						//announcerSound.SetRandomPitch( 1, 2.5f );
 					}
 				}
 			}	
